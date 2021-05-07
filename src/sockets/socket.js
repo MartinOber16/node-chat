@@ -20,7 +20,8 @@ io.on('connection', (client) => {
     io.emit('usuarios-activos', chatMensajes.usuariosArr);
 
     // Enviar los ultimos 10 mensajes al usuario conectado
-    client.emit('recibir-mensajes', chatMensajes.ultimos10 );
+    //client.emit('recibir-mensajes', chatMensajes.ultimos10 );
+    client.emit('recibir-mensajes', chatMensajes.todos );
 
     // Conectar al usuario a una sala especial para mensajes privados
     client.join( usuario._id ); // sala global (io), sala de conexión (client.id) y sala de usuario (usuario.id)
@@ -44,7 +45,8 @@ io.on('connection', (client) => {
         } else {
             // Enviar mensaje publico
             chatMensajes.enviarMensaje(usuario._id, usuario.name, mensaje);
-            io.emit('recibir-mensajes', chatMensajes.ultimos10 );
+            //io.emit('recibir-mensajes', chatMensajes.ultimos10 );
+            io.emit('recibir-mensajes', chatMensajes.todos );
 
         }
     })

@@ -13,7 +13,7 @@ miFormulario.addEventListener('submit', (e) => {
         if(el.name.length > 0)
             formData[el.name] = el.value;
     }
-
+    
     fetch(url + 'login', {
         method: 'POST',
         body: JSON.stringify(formData),

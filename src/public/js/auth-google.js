@@ -1,10 +1,9 @@
+const url = 'https://mo-node-server.herokuapp.com/api/auth/';
 const miFormulario = document.querySelector('form');
 
 //const url = ( window.location.hostname.includes('localhost') )
 //            ? 'http://localhost:3000/api/auth/'
 //            : 'https://mo-node-server.herokuapp.com/api/auth/'; // TODO: Corregir esta url
-
-const url = 'https://mo-node-server.herokuapp.com/api/auth/';
 
 function onSignIn(googleUser) {
 

@@ -3,7 +3,8 @@ class Mensaje {
     constructor(uid, nombre, mensaje) {
         this.uid = uid,
         this.nombre = nombre,
-        this.mensaje = mensaje
+        this.mensaje = mensaje,
+        this.fecha = new Date()
     }
 
 }
@@ -20,12 +21,17 @@ class ChatMensajes {
         return this.mensajes;   
     }
 
+    get todos() {
+        return this.mensajes;   
+    }
+
     get usuariosArr() {
         return Object.values( this.usuarios );
     }
     
     enviarMensaje( uid, nombre, mensaje ) {
-        this.mensajes.unshift(
+        //this.mensajes.unshift(
+        this.mensajes.push(
             new Mensaje(uid, nombre, mensaje, null)
         );
     }
