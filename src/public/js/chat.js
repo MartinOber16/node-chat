@@ -57,7 +57,7 @@ const validarJWT = async() => {
 }
 
 const conectarSocket = async () => {
-    // creo el socket y envio la información del usuario
+    // Inicializo el socket y envio la información del usuario
     socket = io ({
         'extraHeaders': { 
             'user': JSON.stringify(usuario)
@@ -100,7 +100,6 @@ const dibujarMensajes = ( mensajes = [] ) => {
 
     ulMensajes.innerHTML = mensajesHtml;
 }
-
 
 const dibujarUsuarios = ( usuarios = [] ) => {
     let usersHtml = '';
