@@ -13,13 +13,15 @@
         <div class="col-sm-3">
         </div>
         <div class="col-sm-6">
-            <h1>Google Signin</h1>
+            <h1>Acceso con su cuenta de Google</h1>
             <hr>
             <br />
             <div class="g-signin2" data-onsuccess="onSignIn"></div>
             <br />
-            <a href="/chat.html">Continuar</a>
-            <a href="#" onclick="signOut();">Sign out</a>
+            <div id="googleOptions" hidden="true">
+                <a href="/chat.html" >Continuar</a>
+                <a href="#" onclick="signOut();">Salir</a>
+            </div>
         </div>
         <div class="col-sm-3">
         </div>

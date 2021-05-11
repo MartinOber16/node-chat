@@ -1,9 +1,9 @@
 const { io } = require('../app');
-const ChatMensajes = require('../models/chat-mensajes');
+const ChatMessages = require('../models/chat-messages');
 
-const chatMensajes = new ChatMensajes();
+const chatMessages = new ChatMessages();
 
-io.on('connection', (client) => {
+io.on('connection', ( client ) => {
 
     const user = client.handshake.headers['user'];    
     // Si el usuario no existe desconecto al cliente
@@ -12,42 +12,41 @@ io.on('connection', (client) => {
     }
 
     // Agregar el usuario conectado al chat
-    const usuario = JSON.parse(user);
-    chatMensajes.conectarUsuario( usuario ); 
-    console.log(`Se conecto ${usuario.name}`);
+    const userClient = JSON.parse(user);
+    chatMessages.connectUser( userClient ); 
+    console.log(`Se conecto ${userClient.name}`);
 
     // Enviar mensaje para todos con los usuarios conectados
-    io.emit('usuarios-activos', chatMensajes.usuariosArr);
+    io.emit('users-online', chatMessages.usersArr);
 
-    // Enviar los ultimos 10 mensajes al usuario conectado
-    //client.emit('recibir-mensajes', chatMensajes.ultimos10 );
-    client.emit('recibir-mensajes', chatMensajes.todos );
+    // Enviar los mensajes al usuario conectado
+    client.emit('receive-messages', chatMessages.getAll );
 
     // Conectar al usuario a una sala especial para mensajes privados
-    client.join( usuario._id ); // sala global (io), sala de conexión (client.id) y sala de usuario (usuario.id)
+    client.join( userClient._id ); // sala global (io), sala de conexión (client.id) y sala de usuario (usuario.id)
 
     // Limpiar cuando alguien se desconecta
     client.on('disconnect', () => {
-        console.log(`Se desconecto ${usuario.name}`);
-        chatMensajes.desconectarUsuario(usuario._id);
-        io.emit('usuarios-activos', chatMensajes.usuariosArr);
+        chatMessages.disconnectUser(userClient._id);
+        console.log(`Se desconecto ${userClient.name}`);
+
+        io.emit('users-online', chatMessages.usersArr);
     });
 
     // Escuchar mensajes del cliente
-    client.on('enviar-mensaje', (payload) => {
+    client.on('send-message', (payload) => {
 
-        const { uid, mensaje } = payload;
+        console.log('Mensaje: ', payload);
+        const { uid, message } = payload;
 
         if( uid ){
             // Enviar mensaje privado
-            client.to( uid ).emit('mensaje-privado', {nombre: usuario.name, mensaje })
-
+            client.to( uid ).emit('private-message', { name: userClient.name, message })
+            
         } else {
             // Enviar mensaje publico
-            chatMensajes.enviarMensaje(usuario._id, usuario.name, mensaje);
-            //io.emit('recibir-mensajes', chatMensajes.ultimos10 );
-            io.emit('recibir-mensajes', chatMensajes.todos );
-
+            chatMessages.sendMessage( userClient._id, userClient.name, message );
+            io.emit('receive-messages', chatMessages.getAll );
         }
     })
 

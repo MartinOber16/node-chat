@@ -199,7 +199,7 @@ iframe {
   display: block;
   width: 120px;
   height: 120px;
-  border-radius: 50%;
+  border-radius: 25%;
   overflow: hidden;
   margin: 0 auto;
 }
@@ -351,6 +351,46 @@ iframe {
   -ms-box-shadow: 0 10px 30px 0px rgba(51, 51, 51, 0.5);
 }
 
+.login100-form-btn-primary {
+  font-family: Poppins-Medium;
+  font-size: 16px;
+  color: #fff;
+  line-height: 1.2;
+  text-transform: uppercase;
+
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  width: 100%;
+  height: 50px;
+  background-color: rgba(0, 60, 255, 0.808);
+  border-radius: 25px;
+
+  box-shadow: 0 10px 30px 0px rgba(70, 110, 184, 0.5);
+  -moz-box-shadow: 0 10px 30px 0px rgba(70, 110, 184, 0.5);
+  -webkit-box-shadow: 0 10px 30px 0px rgba(70, 110, 184, 0.5);
+  -o-box-shadow: 0 10px 30px 0px rgba(70, 106, 184, 0.5);
+  -ms-box-shadow: 0 10px 30px 0px rgba(70, 110, 184, 0.5);
+
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.login100-form-btn-primary:hover  {
+  background-color: #333333;
+  box-shadow: 0 10px 30px 0px rgba(51, 51, 51, 0.5);
+  -moz-box-shadow: 0 10px 30px 0px rgba(51, 51, 51, 0.5);
+  -webkit-box-shadow: 0 10px 30px 0px rgba(51, 51, 51, 0.5);
+  -o-box-shadow: 0 10px 30px 0px rgba(51, 51, 51, 0.5);
+  -ms-box-shadow: 0 10px 30px 0px rgba(51, 51, 51, 0.5);
+}
 
 
 /*------------------------------------------------------------------

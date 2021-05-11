@@ -1,21 +1,19 @@
-const url = 'https://mo-node-server.herokuapp.com/api/auth/';
+var url = 'https://mo-node-server.herokuapp.com/api/auth/';
 
-let usuario = null;
-let socket = null;
+var userClient = null;
+var socket = null;
 
 // Referencias HTML
-//const txtUid = document.querySelector('#txtUid');
-const txtMensaje = document.querySelector('#txtMensaje');
-//const ulUsuarios = document.querySelector('#ulUsuarios');
-const ulUsuarios = document.querySelector('#divUsuarios');
-//const ulMensajes = document.querySelector('#ulMensajes');
-const ulMensajes = document.querySelector('#divChatbox');
-//const btnSalir = document.querySelector('#btnSalir');
+//var txtUid = document.querySelector('#txtUid');
+var txtMessage = document.querySelector('#txtMensaje');
+var ulUsers = document.querySelector('#divUsuarios');
+var ulMessages = document.querySelector('#divChatbox');
+var btnSend = document.querySelector('#btnSend');
 
 // Validar el token del localStorage
-const validarJWT = async() => {
+async function validateJWT() {
 
-    const token = localStorage.getItem('token') || '';
+    var token = localStorage.getItem('token') || '';
 
     if(token.length <= 10){
         window.location = 'index.html';
@@ -23,31 +21,32 @@ const validarJWT = async() => {
     }
 
     try {    
-        let myHeaders = new Headers();
+        var myHeaders = new Headers();
         myHeaders.append("token", token);
     
-        const requestOptions = {
+        var requestOptions = {
             method: 'POST',
             headers: myHeaders,
             redirect: 'follow'
         };
     
-        const response = await fetch(url + 'new-token', requestOptions);
-        const { status } = response;
-        const data = await response.json();
+        var response = await fetch(url + 'new-token', requestOptions);
+        var { status } = response;
+        var data = await response.json();
 
         if(status === 200){
             // Usuario validado
-            const { user, token: newToken } = data;
+            console.log('Usuario valido!');
+            var { user, token: newToken } = data;
             localStorage.setItem('token', newToken);
         
-            usuario = user;
-            document.title = user.name;
+            userClient = user;
+            document.title = userClient.name;
         
-            await conectarSocket();
+            await connectSocket();
             
         } else {
-            const error = data.error || data.errors[0];    
+            var error = data.error || data.errors[0];    
             console.error(error);
             window.location = "/index.html";
         }
@@ -58,81 +57,84 @@ const validarJWT = async() => {
 
 }
 
-const conectarSocket = async () => {
+async function connectSocket() {
     // Inicializo el socket y envio la información del usuario
     socket = io ({
         'extraHeaders': { 
-            'user': JSON.stringify(usuario)
+            'user': JSON.stringify(userClient)
         }
     });
 
     // Conectar el socket 
-    socket.on('connect', () => { console.log('Socket online'); });
+    socket.on('connect', () => { console.log('Socket online!'); });
 
     // Desconectar el socket
-    socket.on('disconnect', () => { console.log('Socket offline'); });
-
-    // Escuchar mensajes publicos
-    socket.on('recibir-mensajes', dibujarMensajes);
+    socket.on('disconnect', () => { console.log('Socket offline!'); });
 
     // Escuchar usuarios activos
-    socket.on('usuarios-activos', dibujarUsuarios);
+    socket.on('users-online', renderUsers);
+
+    // Escuchar mensajes publicos
+    socket.on('receive-messages', renderMessages);
 
     // Escuchar mensajes privados
-    socket.on('mensaje-privado', (payload) => {
+    socket.on('private-message', (payload) => {
         console.log(payload);
     });
 
 }
 
-const dibujarUsuarios = ( usuarios = [] ) => {
-    let usersHtml = '';
+function renderUsers( users = [] ) {
+    console.log('Renderizando usuarios!');
+    var usersHtml = '';
 
-    usuarios.forEach( user => {
-        usersHtml += `
-            <li>
-                <a data-id=${user._id} href="javascript:void(0)"><img src=${user.img} alt="user-img" class="img-circle"> <span>${user.name}<small class="text-success">online</small></span></a>
-            </li>
-        `;
+    users.forEach( user => {
 
+        if( userClient._id !==  user._id ) {
+            usersHtml += `
+                <li>
+                    <a data-id=${user._id} href="javascript:void( console.log('${user._id}') )"><img src=${user.img} alt="user-img" class="img-circle"> <span>${user.name}<small class="text-success">online</small></span></a>
+                </li>
+            `;
+        }
     })
 
-    ulUsuarios.innerHTML = usersHtml;
+    ulUsers.innerHTML = usersHtml;
 }
 
-const dibujarMensajes = ( mensajes = [] ) => {
-    let mensajesHtml = '';
+function renderMessages( messages = [] ) {
+    console.log('Renderizando mensajes!');
+    var messagesHtml = '';
 
-    mensajes.forEach( mensaje => {
-        var fecha = new Date(mensaje.fecha);
-        var hora = fecha.getHours() + ':' + fecha.getMinutes();
+    messages.forEach( message => {
+        var date = new Date(message.date);
+        var hour = date.getHours() + ':' + date.getMinutes();
         
-        if( usuario._id ===  mensaje.uid ) {
-            mensajesHtml += `
+        if( userClient._id ===  message.uid ) {
+            messagesHtml += `
                 <li class="reverse">
                     <div class="chat-content">
-                        <h5>${mensaje.nombre}</h5>
-                        <div class="box bg-light-inverse">${mensaje.mensaje}</div>
+                        <div class="box bg-light-inverse">${message.text}</div>
                     </div>
-                    <div class="chat-time">${hora}</div>'
+                    <div class="chat-time">${hour}</div>'
                 </li>
             `;
 
         } else {
-            mensajesHtml += `
+            messagesHtml += `
                 <li class="animated fadeIn">
                     <div class="chat-content">
-                        <h5>${mensaje.nombre}</h5>
-                        <div class="box bg-light">${mensaje.mensaje}</div>
+                        <h5>${message.name}</h5>
+                        <div class="box bg-light">${message.text}</div>
                     </div>
-                    <div class="chat-time">${hora}</div>'
+                    <div class="chat-time">${hour}</div>'
                 </li>
             `;
 
         }
     })
 
-    ulMensajes.innerHTML = mensajesHtml;
+    ulMessages.innerHTML = messagesHtml;
     scrollBottom();
 }
 
@@ -155,32 +157,39 @@ function scrollBottom() {
     }
 }
 
-txtMensaje.addEventListener('keyup', ({keyCode}) => {
+function sendMessage() {
+    var message = txtMessage.value;
+    //var uid = txtUid.value;
+    var uid = '';
 
-    const mensaje = txtMensaje.value;
-    //const uid = txtUid.value;
-    const uid = '';
+    if(message.length === 0){
+        return;
+    }
 
+    // Enviar mensaje (si tiene uid entonces es privado)
+    socket.emit('send-message', { message, uid });
+    console.log('Mensaje enviado!', { uid, message });
+    
+    txtMessage.value = '';
+}
+
+txtMessage.addEventListener('keyup', ({keyCode}) => {
     // keyCode 13 es el ENTER
     if(keyCode !== 13){
         return;
     }
 
-    if(mensaje.length === 0){
-        return;
-    }
-
-    // Enviar mensaje (si tiene uid entonces es privado)
-    socket.emit('enviar-mensaje', { mensaje , uid });
-    
-    txtMensaje.value = '';
-
+    sendMessage();
 })
 
-const main = async() => {
-    // Validar el token del usuario
-    await validarJWT();
+btnSend.addEventListener('click', (e) => {
+    e.preventDefault();
+    sendMessage();
+})
 
+async function main() {
+    // Validar el token del usuario
+    await validateJWT();
 }
 
 main();
