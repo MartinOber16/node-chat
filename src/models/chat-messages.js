@@ -34,6 +34,11 @@ class ChatMessage {
         this.messages.push(
             new Message(uid, name, text)
         );
+        
+        // Elimino el primer mensaje para que no se me vaya de los 100 elementos
+        if(this.messages.length > 100)
+            this.messages.shift();
+
     }
 
     connectUser( user ) {
