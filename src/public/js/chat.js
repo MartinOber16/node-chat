@@ -9,6 +9,7 @@ var txtMessage = document.querySelector('#txtMensaje');
 var ulUsers = document.querySelector('#divUsuarios');
 var ulMessages = document.querySelector('#divChatbox');
 var btnSend = document.querySelector('#btnSend');
+var h1 = document.querySelector('#userName');
 
 // Validar el token del localStorage
 async function validateJWT() {
@@ -41,7 +42,8 @@ async function validateJWT() {
             localStorage.setItem('token', newToken);
         
             userClient = user;
-            document.title = userClient.name;
+            //document.title = userClient.name;
+            h1.innerText = userClient.name;
         
             await connectSocket();
             

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Chat</title>
+    <title>Chat App</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -40,8 +40,9 @@
                     <div class="col-1"></div>
                     <div class="col-10">
                         <button class="btn btn-danger float-right" style="margin-right: 50px;" href="#" onclick="logout();"><i class="fa fa-sign-out" aria-hidden="true"></i> Salir</button>
-                        <br />
-                        <br />
+                        <div style="margin-left: 50px;">
+                            <h1 id="userName"></h1>
+                        </div> 
                         <br />
                         <div class="card m-b-0">
                             <!-- .chat-row -->
@@ -51,7 +52,7 @@
                                     <div class="open-panel"><i class="ti-angle-right"></i></div>
                                     <div class="chat-left-inner">
                                         <div class="form-material">
-                                            <input class="form-control p-20" type="text" placeholder="Buscar Contacto">
+                                            <input class="form-control p-20" type="text" placeholder="Buscar Contacto" id="inputSearchContact">
                                         </div>
                                         <ul class="chatonline style-none" id="divUsuarios">
                                             <!-- Renderizar aqui los usuarios!!! -->
@@ -91,11 +92,11 @@
                                     </div>
                                     <div class="card-body b-t">
                                         <div class="row">
-                                            <div class="col-10">
+                                            <div class="col-9">
                                                 <!-- <textarea placeholder="Escribe tu mensaje aquí" class="form-control b-0"></textarea> -->
                                                 <input type="text" name="txtMensaje" id="txtMensaje" class="form-control b-0" placeholder="Escribe tu mensaje aquí" autocomplete="off" />
                                             </div>
-                                            <div class="col-2 text-left">
+                                            <div class="col-3 text-left">
                                                 <button id="btnSend" type="button" class="btn btn-info btn-circle btn-lg"><i class="fa fa-paper-plane-o"></i> </button>
                                             </div>
                                         </div>
@@ -150,6 +151,17 @@
                 window.location="index.html";
             }
         }
+    </script>
+
+    <script>
+        $(document).ready(function(){
+            $("#inputSearchContact").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#divUsuarios li").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
     </script>
 
 </body>
